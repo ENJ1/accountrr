@@ -10,22 +10,25 @@ class Transaction {
       {required this.id,
       required this.date,
       required this.title,
-      required this.notes,
+      required this.description,
+      required this.category,
       required this.value});
 
   final int id;
   final DateTime date;
   final String title;
-  final String notes;
+  final String description;
   final double value;
+  final String category;
 
   Map<String, Object?> toMap() {
     return {
       'id': id,
       'date': date.toString(),
       'title': title,
-      'notes': notes,
-      'value': value
+      'description': description,
+      'value': value,
+      'category': category
     };
   }
 }
@@ -45,15 +48,48 @@ class Transactions extends _$Transactions {
             id: transaction['id'] as int,
             title: transaction['title'] as String,
             date: DateTime.parse(transaction['date'] as String),
-            notes: transaction['notes'] as String,
+            description: transaction['description'] as String,
+            category: transaction['category'] as String,
             value: transaction['value'] as double),
     ];
+  }
+
+  Future<Transaction> getTransaction(int id) async {
+    final List<Map<String, Object?>> transactionMaps =
+        await ref.watch(dbProvider).value!.query(
+      'TRANSACTIONS',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    return [
+      for (final transaction in transactionMaps)
+        Transaction(
+            id: transaction['id'] as int,
+            title: transaction['title'] as String,
+            date: DateTime.parse(transaction['date'] as String),
+            description: transaction['description'] as String,
+            category: transaction['category'] as String,
+            value: transaction['value'] as double),
+    ][0];
   }
 
   void addTransaction(Transaction transaction) {
     ref.watch(dbProvider).when(
         data: (data) {
           data.insert("TRANSACTIONS", transaction.toMap());
+        },
+        loading: () {},
+        error: (object, stack) {});
+
+    ref.invalidateSelf();
+  }
+
+  void editTransaction(Transaction transaction) {
+    ref.watch(dbProvider).when(
+        data: (data) {
+          data.update("TRANSACTIONS", transaction.toMap(),
+              where: 'id = ?', whereArgs: [transaction.id]);
         },
         loading: () {},
         error: (object, stack) {});
@@ -72,7 +108,16 @@ class Transactions extends _$Transactions {
     ref.invalidateSelf();
   }
 
-  //void clearTransactions() async {
-  //  return ref.watch(databaseProvider).when(data: (data) {});
-  //}
+  void filterTransactions(String query, String category) {
+    state = AsyncValue.loading();
+    state = AsyncValue.data(state.value!
+        .where((transaction) =>
+            ((transaction.title.toLowerCase().contains(query.toLowerCase()) &&
+                transaction.category == category)))
+        .toList());
+
+    //void clearTransactions() async {
+    //  return ref.watch(databaseProvider).when(data: (data) {});
+    //}
+  }
 }

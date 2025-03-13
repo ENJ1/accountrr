@@ -6,7 +6,7 @@ part of 'DBProvider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dbHash() => r'c52a74df1d3c15bcec04bd9b477b945f1ca2fc60';
+String _$dbHash() => r'cafa8e89cbae2756e24cdd499e6f73b0d97ccb08';
 
 /// See also [db].
 @ProviderFor(db)
@@ -21,4 +21,4 @@ final dbProvider = AutoDisposeAsyncNotifierProvider<db, Database>.internal(
 
 typedef _$db = AutoDisposeAsyncNotifier<Database>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

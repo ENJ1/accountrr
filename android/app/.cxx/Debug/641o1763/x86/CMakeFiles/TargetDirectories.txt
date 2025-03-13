@@ -1,0 +1,2 @@
+/home/ethanjoseph/Documents/Projects/accountrr/android/app/.cxx/Debug/641o1763/x86/CMakeFiles/edit_cache.dir
+/home/ethanjoseph/Documents/Projects/accountrr/android/app/.cxx/Debug/641o1763/x86/CMakeFiles/rebuild_cache.dir

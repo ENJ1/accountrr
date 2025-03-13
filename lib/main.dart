@@ -4,10 +4,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'HomeScreen.dart';
 import "TransactionScreen.dart";
 import 'package:flutter/services.dart';
-import 'AddTransactionScreen.dart';
+import 'EditTransactionScreen.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'dart:io';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  if (Platform.isWindows || Platform.isLinux) {
+    // Initialize FFI
+    sqfliteFfiInit();
+  }
+  // Change the default factory. On iOS/Android, if not using `sqlite_flutter_lib` you can forget
+  // this step, it will use the sqlite version available on the system.
+  databaseFactory = databaseFactoryFfi;
+
   runApp(ProviderScope(child: const MyApp()));
 }
 
@@ -46,12 +57,19 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
         ],
         onDestinationSelected: _goBranch,
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          context.push("/add_transaction");
-        },
-        label: Text("Add Transaction"),
-        icon: const Icon(Icons.add),
+      floatingActionButton: Row(
+        spacing: 5,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            onPressed: () {
+              context.push("/add_transaction");
+            },
+            label: Text("Add Transaction"),
+            icon: const Icon(Icons.add),
+          ),
+          FloatingActionButton(onPressed: () {}, child: Icon(Icons.help))
+        ],
       ),
     );
   }
@@ -115,7 +133,12 @@ final _routerConfig = GoRouter(
     ),
     GoRoute(
       path: '/add_transaction',
-      builder: (context, state) => AddTransactionScreen(),
+      builder: (context, state) => EditTransactionScreen(),
+    ),
+    GoRoute(
+      path: '/edit_transaction',
+      builder: (context, state) => EditTransactionScreen(
+          id: int.parse(state.uri.queryParameters['id']!)),
     ),
   ],
 );
@@ -135,7 +158,8 @@ class MyApp extends StatelessWidget {
     return Consumer(
         builder: (context, ref, child) => MaterialApp.router(
             theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.red)),
+                colorScheme: ColorScheme.fromSeed(
+                    seedColor: Colors.red, brightness: Brightness.dark)),
             routerConfig: _routerConfig));
   }
 }

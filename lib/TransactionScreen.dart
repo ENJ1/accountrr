@@ -8,6 +8,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'TransactionCard.dart';
 import 'TransactionsProvider.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 
 class TransactionScreen extends ConsumerStatefulWidget {
   const TransactionScreen({
@@ -29,10 +31,107 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                   SliverToBoxAdapter(
                     child: SizedBox(
                         height: 65,
-                        child: Text(
-                          "Your Transactions",
-                          style: TextStyle(fontSize: 25),
-                        )),
+                        child: Row(children: [
+                          Expanded(
+                              child: Text(
+                            "Your Transactions",
+                            style: TextStyle(fontSize: 25),
+                          )),
+                          IconButton(
+                            icon: Icon(Icons.filter_list),
+                            onPressed: () {
+                              final _formKey = GlobalKey<FormBuilderState>();
+
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return SimpleDialog(
+                                        title: Text("Filter Transactions"),
+                                        children: [
+                                          FormBuilder(
+                                              key: _formKey,
+                                              child: Column(
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.all(5),
+                                                    child: FormBuilderTextField(
+                                                      initialValue: "",
+                                                      decoration: InputDecoration(
+                                                          labelText: "Search",
+                                                          border:
+                                                              OutlineInputBorder()),
+                                                      name: "search",
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                      padding:
+                                                          EdgeInsets.all(5),
+                                                      child:
+                                                          FormBuilderDropdown(
+                                                              initialValue: "",
+                                                              name: "category",
+                                                              items: [
+                                                            DropdownMenuItem(
+                                                                child: Text(
+                                                                    "Groceries"),
+                                                                value:
+                                                                    "groceries"),
+                                                            DropdownMenuItem(
+                                                                child: Text(
+                                                                    "Food"),
+                                                                value: "food"),
+                                                            DropdownMenuItem(
+                                                                child: Text(
+                                                                    "Online Shopping"),
+                                                                value:
+                                                                    "online_shopping"),
+                                                            DropdownMenuItem(
+                                                                child: Text(
+                                                                    "Income"),
+                                                                value:
+                                                                    "income"),
+                                                          ]))
+                                                ],
+                                              )),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              TextButton(
+                                                  onPressed: () {
+                                                    ref.invalidate(
+                                                        transactionsProvider);
+                                                  },
+                                                  child: Text("Reset")),
+                                              TextButton(
+                                                  onPressed: () {
+                                                    _formKey.currentState
+                                                        ?.saveAndValidate();
+
+                                                    ref
+                                                        .read(
+                                                            transactionsProvider
+                                                                .notifier)
+                                                        .filterTransactions(
+                                                            _formKey.currentState
+                                                                    ?.value[
+                                                                "search"],
+                                                            _formKey.currentState
+                                                                    ?.value[
+                                                                "category"]);
+                                                  },
+                                                  child: Text("Apply"))
+                                            ],
+                                          )
+                                        ]);
+                                  });
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.print),
+                            onPressed: () {},
+                          )
+                        ])),
                   ),
                   ref.watch(transactionsProvider).when(
                       data: (data) => SliverFixedExtentList(
@@ -47,15 +146,20 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                                             .watch(
                                                 transactionsProvider.notifier)
                                             .deleteTransaction(transaction.id);
-
-                                        this.dispose();
                                       },
                                       key: Key(transaction.id.toString()),
                                       child: TransactionCard(
+                                          onClick: () {
+                                            context.push(Uri(
+                                                path: '/edit_transaction',
+                                                queryParameters: {
+                                                  'id':
+                                                      transaction.id.toString()
+                                                }).toString());
+                                          },
                                           title: transaction.title,
                                           date: transaction.date.toString(),
-                                          value:
-                                              transaction.value.toString()))),
+                                          value: transaction.value.toString())))
                           ])),
                       error: (object, stack) => SliverToBoxAdapter(
                           child: Text(object.toString() + stack.toString())),

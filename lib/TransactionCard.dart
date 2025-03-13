@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-class TransactionCard extends StatefulWidget {
+class TransactionCard extends StatelessWidget {
   const TransactionCard(
       {super.key,
       required this.title,
       required this.date,
-      required this.value});
+      required this.value,
+      required this.onClick});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -19,72 +20,40 @@ class TransactionCard extends StatefulWidget {
   final String title;
   final String date;
   final String value;
+  final Function() onClick;
 
-  @override
-  State<TransactionCard> createState() => _TransactionCardState();
-}
-
-class _TransactionCardState extends State<TransactionCard> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Stack(
-              children: [
-                Image(
-                  height: double.infinity,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  image: NetworkImage(
-                      "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?cs=srgb&dl=pexels-ella-olsson-572949-1640777.jpg&fm=jpg&w=4288&h=2859"),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                  height: double.infinity,
-                  alignment: Alignment.bottomLeft,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: <Color>[
-                        Colors.black,
-                        Colors.black45.withAlpha(0)
-                      ],
-                    ),
+    return GestureDetector(
+        onTap: onClick,
+        child: Card.filled(
+          child: Row(children: [
+            Expanded(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  Text(
+                    title,
+                    style: TextStyle(fontSize: 20.0),
                   ),
-                  child: Row(children: [
-                    Expanded(
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                          Text(
-                            widget.title,
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 20.0),
-                          ),
-                          Text(
-                            widget.date,
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 10.0),
-                          ),
-                        ])),
-                    Expanded(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              widget.value,
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 30.0),
-                            ),
-                          ]),
-                    )
+                  Text(
+                    date,
+                    style: TextStyle(fontSize: 10.0),
+                  ),
+                ])),
+            Expanded(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      value,
+                      style: TextStyle(fontSize: 30.0),
+                    ),
                   ]),
-                ),
-              ],
-            )));
+            )
+          ]),
+        ));
   }
 }

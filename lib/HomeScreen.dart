@@ -31,36 +31,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         SliverToBoxAdapter(
           child: SizedBox(
             height: 75,
-            child: Column(children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  DateFormat.MMMMEEEEd().format(DateTime.now()),
-                ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                DateFormat.MMMMEEEEd().format(DateTime.now()),
               ),
-              Row(
-                children: [
-                  Expanded(
-                      flex: 9,
-                      child: Text(
-                        (DateTime.now().hour < 12
-                                ? "Good Morning"
-                                : "Good Afternoon") +
-                            ", Ethan",
-                        style: TextStyle(fontSize: 25),
-                      )),
-                  Expanded(
-                    flex: 1,
-                    child: IconButton(
-                      onPressed: () {
-                        context.push("/search");
-                      },
-                      icon: Icon(Icons.settings),
-                      splashColor: Colors.transparent,
-                      alignment: Alignment.centerRight,
-                    ),
-                  ),
-                ],
+              Text(
+                (DateTime.now().hour < 12 ? "Good Morning" : "Good Afternoon") +
+                    ", Ethan",
+                style: TextStyle(fontSize: 25),
               ),
             ]),
           ),
@@ -68,7 +47,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         SliverToBoxAdapter(
           child: SizedBox(
               height: 150,
-              child: Card(
+              child: Card.outlined(
                   child: Padding(
                       padding: EdgeInsets.all(15),
                       child: Row(children: [
@@ -148,8 +127,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           height: 150,
           child: Row(children: [
             Expanded(
-                child: Card(
-                    color: Color.fromARGB(255, 218, 224, 255),
+                child: Card.outlined(
                     child: Padding(
                         padding: EdgeInsets.all(8),
                         child: Column(children: [
@@ -161,29 +139,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           Expanded(
                               flex: 60,
                               child: Column(children: [
-                                ref.watch(transactionsProvider).when(
-                                    data: (data) => Text(
-                                          [
-                                            for (final transaction in data)
-                                              (transaction.value > 0)
-                                                  ? transaction.value
-                                                  : 0
-                                          ].sum.toString(),
-                                          style: TextStyle(fontSize: 25),
-                                        ),
-                                    error: (object, stack) => Text(
-                                        object.toString() + stack.toString()),
-                                    loading: () => CircularProgressIndicator()),
-                                Text(
+                                Expanded(
+                                    child: ref.watch(transactionsProvider).when(
+                                        data: (data) => Text(
+                                              [
+                                                for (final transaction in data)
+                                                  (transaction.value > 0)
+                                                      ? transaction.value
+                                                      : 0
+                                              ].sum.toString(),
+                                              style: TextStyle(fontSize: 25),
+                                            ),
+                                        error: (object, stack) => Text(
+                                            object.toString() +
+                                                stack.toString()),
+                                        loading: () =>
+                                            CircularProgressIndicator())),
+                                Expanded(
+                                    child: Text(
                                   "\u25B2 4%",
                                   style: TextStyle(fontSize: 10),
-                                )
+                                ))
                               ])),
                         ])))),
             Expanded(
                 child: Expanded(
-                    child: Card(
-                        color: Color.fromARGB(199, 255, 225, 222),
+                    child: Card.outlined(
                         child: Padding(
                             padding: EdgeInsets.all(8),
                             child: Column(children: [
@@ -195,25 +176,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               Expanded(
                                   flex: 60,
                                   child: Column(children: [
-                                    ref.watch(transactionsProvider).when(
-                                        data: (data) => Text(
-                                              [
-                                                for (final transaction in data)
-                                                  (transaction.value < 0)
-                                                      ? transaction.value
-                                                      : 0
-                                              ].sum.toString(),
-                                              style: TextStyle(fontSize: 25),
-                                            ),
-                                        error: (object, stack) => Text(
-                                            object.toString() +
-                                                stack.toString()),
-                                        loading: () =>
-                                            CircularProgressIndicator()),
-                                    Text(
+                                    Expanded(
+                                      child: ref
+                                          .watch(transactionsProvider)
+                                          .when(
+                                              data: (data) => Text(
+                                                    [
+                                                      for (final transaction
+                                                          in data)
+                                                        (transaction.value < 0)
+                                                            ? transaction.value
+                                                            : 0
+                                                    ].sum.toString(),
+                                                    style:
+                                                        TextStyle(fontSize: 25),
+                                                  ),
+                                              error: (object, stack) => Text(
+                                                  object.toString() +
+                                                      stack.toString()),
+                                              loading: () =>
+                                                  CircularProgressIndicator()),
+                                    ),
+                                    Expanded(
+                                        child: Text(
                                       "\u25B2 0%",
                                       style: TextStyle(fontSize: 10),
-                                    )
+                                    )),
                                   ])),
                             ])))))
           ]),
@@ -245,23 +233,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 )),
           ),
         ),
-        SliverFixedExtentList(
-          itemExtent: 150,
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
-              if (index <= 2) {
-                return Padding(
-                    padding: EdgeInsets.only(top: 5),
-                    child: TransactionCard(
-                        title: "Lunch with Anna",
-                        date: "10/15/24",
-                        value: "-26.34"));
-              } else {
-                return null;
-              }
-            },
-          ),
-        ),
+        ref.watch(transactionsProvider).when(
+            data: (data) => SliverFixedExtentList(
+                itemExtent: 160,
+                delegate: SliverChildListDelegate([
+                  for (final transaction in data)
+                    Padding(
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        child: Dismissible(
+                            onDismissed: (DismissDirection) {
+                              ref
+                                  .watch(transactionsProvider.notifier)
+                                  .deleteTransaction(transaction.id);
+
+                              this.dispose();
+                            },
+                            key: Key(transaction.id.toString()),
+                            child: TransactionCard(
+                                onClick: () {},
+                                title: transaction.title,
+                                date: transaction.date.toString(),
+                                value: transaction.value.toString()))),
+                ])),
+            error: (object, stack) => SliverToBoxAdapter(
+                child: Text(object.toString() + stack.toString())),
+            loading: () =>
+                SliverToBoxAdapter(child: CircularProgressIndicator()))
       ]),
     )));
   }
