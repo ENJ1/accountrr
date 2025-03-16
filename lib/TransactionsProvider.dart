@@ -112,8 +112,11 @@ class Transactions extends _$Transactions {
     state = AsyncValue.loading();
     state = AsyncValue.data(state.value!
         .where((transaction) =>
-            ((transaction.title.toLowerCase().contains(query.toLowerCase()) &&
-                transaction.category == category)))
+            (transaction.title.toLowerCase().contains(query.toLowerCase()) ||
+                transaction.category == category ||
+                transaction.description
+                    .toLowerCase()
+                    .contains(query.toLowerCase())))
         .toList());
 
     //void clearTransactions() async {

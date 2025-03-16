@@ -150,6 +150,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                                       Expanded(
                                         flex: 40,
                                         child: FormBuilderDateTimePicker(
+                                          fieldHintText: "Date",
                                           initialValue: snapshot.data!.date,
                                           inputType: InputType.date,
                                           format: DateFormat.yMEd(),
@@ -160,6 +161,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                                       Expanded(
                                           flex: 40,
                                           child: FormBuilderDropdown(
+                                              hint: Text("Category"),
                                               initialValue:
                                                   snapshot.data!.category,
                                               name: "category",
@@ -255,7 +257,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                           ),
                           IntrinsicWidth(
                             child: FormBuilderTextField(
-                              initialValue: "100",
                               showCursor: false,
                               keyboardType: TextInputType.number,
                               name: "value",
@@ -295,6 +296,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                               Expanded(
                                 flex: 40,
                                 child: FormBuilderDateTimePicker(
+                                  fieldHintText: "Date",
                                   inputType: InputType.date,
                                   format: DateFormat.yMEd(),
                                   name: "date",
@@ -304,6 +306,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                               Expanded(
                                   flex: 40,
                                   child: FormBuilderDropdown(
+                                      hint: Text("Category"),
                                       name: "category",
                                       items: [
                                         DropdownMenuItem(

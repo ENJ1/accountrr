@@ -62,22 +62,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ),
                             Spacer(flex: 15),
                             Expanded(
-                                flex: 70,
-                                child: Column(children: [
-                                  ref.watch(balanceProvider).when(
-                                      data: (data) => Text(
-                                            data.toString(),
-                                            style: TextStyle(fontSize: 25),
-                                          ),
-                                      error: (object, stack) => Text(
-                                          object.toString() + stack.toString()),
-                                      loading: () =>
-                                          CircularProgressIndicator()),
-                                  Text(
-                                    "\u25B2 10%",
-                                    style: TextStyle(fontSize: 10),
-                                  )
-                                ])),
+                              flex: 70,
+                              child: ref.watch(balanceProvider).when(
+                                  data: (data) => Text(
+                                        data.toString(),
+                                        style: TextStyle(fontSize: 25),
+                                      ),
+                                  error: (object, stack) => Text(
+                                      object.toString() + stack.toString()),
+                                  loading: () => CircularProgressIndicator()),
+                            ),
                           ]),
                         ),
                         Spacer(flex: 10),
@@ -138,29 +132,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           Spacer(flex: 20),
                           Expanded(
                               flex: 60,
-                              child: Column(children: [
-                                Expanded(
-                                    child: ref.watch(transactionsProvider).when(
-                                        data: (data) => Text(
-                                              [
-                                                for (final transaction in data)
-                                                  (transaction.value > 0)
-                                                      ? transaction.value
-                                                      : 0
-                                              ].sum.toString(),
-                                              style: TextStyle(fontSize: 25),
-                                            ),
-                                        error: (object, stack) => Text(
-                                            object.toString() +
-                                                stack.toString()),
-                                        loading: () =>
-                                            CircularProgressIndicator())),
-                                Expanded(
-                                    child: Text(
-                                  "\u25B2 4%",
-                                  style: TextStyle(fontSize: 10),
-                                ))
-                              ])),
+                              child: ref.watch(transactionsProvider).when(
+                                  data: (data) => Text(
+                                        [
+                                          for (final transaction in data)
+                                            (transaction.value > 0)
+                                                ? transaction.value
+                                                : 0
+                                        ].sum.toString(),
+                                        style: TextStyle(fontSize: 25),
+                                      ),
+                                  error: (object, stack) => Text(
+                                      object.toString() + stack.toString()),
+                                  loading: () => CircularProgressIndicator())),
                         ])))),
             Expanded(
                 child: Expanded(
@@ -174,35 +158,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ),
                               Spacer(flex: 20),
                               Expanded(
-                                  flex: 60,
-                                  child: Column(children: [
-                                    Expanded(
-                                      child: ref
-                                          .watch(transactionsProvider)
-                                          .when(
-                                              data: (data) => Text(
-                                                    [
-                                                      for (final transaction
-                                                          in data)
-                                                        (transaction.value < 0)
-                                                            ? transaction.value
-                                                            : 0
-                                                    ].sum.toString(),
-                                                    style:
-                                                        TextStyle(fontSize: 25),
-                                                  ),
-                                              error: (object, stack) => Text(
-                                                  object.toString() +
-                                                      stack.toString()),
-                                              loading: () =>
-                                                  CircularProgressIndicator()),
-                                    ),
-                                    Expanded(
-                                        child: Text(
-                                      "\u25B2 0%",
-                                      style: TextStyle(fontSize: 10),
-                                    )),
-                                  ])),
+                                flex: 60,
+                                child: ref.watch(transactionsProvider).when(
+                                    data: (data) => Text(
+                                          [
+                                            for (final transaction in data)
+                                              (transaction.value < 0)
+                                                  ? transaction.value
+                                                  : 0
+                                          ].sum.toString(),
+                                          style: TextStyle(fontSize: 25),
+                                        ),
+                                    error: (object, stack) => Text(
+                                        object.toString() + stack.toString()),
+                                    loading: () => CircularProgressIndicator()),
+                              ),
                             ])))))
           ]),
         )),
@@ -252,7 +222,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             child: TransactionCard(
                                 onClick: () {},
                                 title: transaction.title,
-                                date: transaction.date.toString(),
+                                date: transaction.date,
                                 value: transaction.value.toString()))),
                 ])),
             error: (object, stack) => SliverToBoxAdapter(

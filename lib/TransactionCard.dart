@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class TransactionCard extends StatelessWidget {
   const TransactionCard(
@@ -18,7 +19,7 @@ class TransactionCard extends StatelessWidget {
   // always marked "final".
 
   final String title;
-  final String date;
+  final DateTime date;
   final String value;
   final Function() onClick;
 
@@ -29,29 +30,34 @@ class TransactionCard extends StatelessWidget {
         child: Card.filled(
           child: Row(children: [
             Expanded(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                  Text(
-                    title,
-                    style: TextStyle(fontSize: 20.0),
-                  ),
-                  Text(
-                    date,
-                    style: TextStyle(fontSize: 10.0),
-                  ),
-                ])),
+              child: Padding(
+                  padding: EdgeInsets.all(5),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(fontSize: 20.0),
+                        ),
+                        Text(
+                          DateFormat("MM-dd-yyyy").format(date).toString(),
+                          style: TextStyle(fontSize: 10.0),
+                        ),
+                      ])),
+            ),
             Expanded(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      value,
-                      style: TextStyle(fontSize: 30.0),
-                    ),
-                  ]),
+              child: Padding(
+                  padding: EdgeInsets.all(5),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          "\$" + value,
+                          style: TextStyle(fontSize: 30.0),
+                        ),
+                      ])),
             )
           ]),
         ));

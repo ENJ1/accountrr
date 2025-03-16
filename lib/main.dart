@@ -5,6 +5,7 @@ import 'HomeScreen.dart';
 import "TransactionScreen.dart";
 import 'package:flutter/services.dart';
 import 'EditTransactionScreen.dart';
+import 'HelpScreen.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'dart:io';
 
@@ -68,7 +69,11 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
             label: Text("Add Transaction"),
             icon: const Icon(Icons.add),
           ),
-          FloatingActionButton(onPressed: () {}, child: Icon(Icons.help))
+          FloatingActionButton(
+              onPressed: () {
+                context.push("/help");
+              },
+              child: Icon(Icons.help))
         ],
       ),
     );
@@ -139,6 +144,10 @@ final _routerConfig = GoRouter(
       path: '/edit_transaction',
       builder: (context, state) => EditTransactionScreen(
           id: int.parse(state.uri.queryParameters['id']!)),
+    ),
+    GoRoute(
+      path: '/help',
+      builder: (context, state) => HelpScreen(),
     ),
   ],
 );

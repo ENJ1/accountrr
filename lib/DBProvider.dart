@@ -8,8 +8,8 @@ part 'DBProvider.g.dart';
 class db extends _$db {
   @override
   Future<Database> build() async {
-    var databasesPath = await getApplicationDocumentsDirectory();
-    String path = join(databasesPath.toString(), 'accountrr.db');
+    var databasesPath = await getApplicationSupportDirectory();
+    String path = join(databasesPath.path, 'accountrr.db');
 
 // open the database
     return await openDatabase(path, version: 1,

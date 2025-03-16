@@ -135,7 +135,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                   ),
                   ref.watch(transactionsProvider).when(
                       data: (data) => SliverFixedExtentList(
-                          itemExtent: 160,
+                          itemExtent: 100,
                           delegate: SliverChildListDelegate([
                             for (final transaction in data)
                               Padding(
@@ -158,7 +158,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                                                 }).toString());
                                           },
                                           title: transaction.title,
-                                          date: transaction.date.toString(),
+                                          date: transaction.date,
                                           value: transaction.value.toString())))
                           ])),
                       error: (object, stack) => SliverToBoxAdapter(
