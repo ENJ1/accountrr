@@ -42,7 +42,7 @@ class Transactions extends _$Transactions {
               'TRANSACTIONS',
             );
 
-    return [
+    List<Transaction> transactions = [
       for (final transaction in transactionMaps)
         Transaction(
             id: transaction['id'] as int,
@@ -52,6 +52,13 @@ class Transactions extends _$Transactions {
             category: transaction['category'] as String,
             value: transaction['value'] as double),
     ];
+
+    transactions.sort(
+      (a, b) => b.date.millisecondsSinceEpoch
+          .compareTo(a.date.millisecondsSinceEpoch),
+    );
+
+    return transactions;
   }
 
   Future<Transaction> getTransaction(int id) async {

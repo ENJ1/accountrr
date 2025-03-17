@@ -65,7 +65,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               flex: 70,
                               child: ref.watch(balanceProvider).when(
                                   data: (data) => Text(
-                                        data.toString(),
+                                        "\$" + data.toString(),
                                         style: TextStyle(fontSize: 25),
                                       ),
                                   error: (object, stack) => Text(
@@ -134,12 +134,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               flex: 60,
                               child: ref.watch(transactionsProvider).when(
                                   data: (data) => Text(
-                                        [
-                                          for (final transaction in data)
-                                            (transaction.value > 0)
-                                                ? transaction.value
-                                                : 0
-                                        ].sum.toString(),
+                                        "\$" +
+                                            [
+                                              for (final transaction in data)
+                                                (transaction.value > 0)
+                                                    ? transaction.value
+                                                    : 0
+                                            ].sum.toString(),
                                         style: TextStyle(fontSize: 25),
                                       ),
                                   error: (object, stack) => Text(
@@ -161,12 +162,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 flex: 60,
                                 child: ref.watch(transactionsProvider).when(
                                     data: (data) => Text(
-                                          [
-                                            for (final transaction in data)
-                                              (transaction.value < 0)
-                                                  ? transaction.value
-                                                  : 0
-                                          ].sum.toString(),
+                                          "\$" +
+                                              [
+                                                for (final transaction in data)
+                                                  (transaction.value < 0)
+                                                      ? transaction.value
+                                                      : 0
+                                              ].sum.toString(),
                                           style: TextStyle(fontSize: 25),
                                         ),
                                     error: (object, stack) => Text(
@@ -204,10 +206,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ),
         ref.watch(transactionsProvider).when(
-            data: (data) => SliverFixedExtentList(
-                itemExtent: 160,
-                delegate: SliverChildListDelegate([
-                  for (final transaction in data)
+            data: (data) => SliverList(
+                    delegate: SliverChildListDelegate([
+                  for (final transaction in data.take(3))
                     Padding(
                         padding: EdgeInsets.symmetric(vertical: 5),
                         child: Dismissible(

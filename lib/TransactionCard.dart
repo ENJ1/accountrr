@@ -29,26 +29,29 @@ class TransactionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: onClick,
-        child: ExpansionTile(
-          title: Text(title),
-          subtitle: Text(
-            DateFormat("MM-dd-yyyy").format(date).toString() + " • " + category,
-            style: TextStyle(fontSize: 10.0),
-          ),
-          trailing: Padding(
-              padding: EdgeInsets.all(5),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      "\$" + value,
-                      style: TextStyle(fontSize: 30.0),
-                    ),
-                  ])),
-          children: [Text(description)],
-        ));
+    return ExpansionTile(
+      title: Text(title),
+      subtitle: Text(
+        DateFormat("MM-dd-yyyy").format(date).toString() + " • " + category,
+        style: TextStyle(fontSize: 10.0),
+      ),
+      trailing: Padding(
+          padding: EdgeInsets.all(5),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  "\$" + value,
+                  style: TextStyle(fontSize: 25.0),
+                ),
+              ])),
+      children: [
+        ListTile(
+          title: Text(description),
+          trailing: TextButton(onPressed: onClick, child: Text("Edit")),
+        ),
+      ],
+    );
   }
 }

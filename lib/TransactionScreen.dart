@@ -172,9 +172,8 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                         ])),
                   ),
                   ref.watch(transactionsProvider).when(
-                      data: (data) => SliverFixedExtentList(
-                          itemExtent: 160,
-                          delegate: SliverChildListDelegate([
+                      data: (data) => SliverList(
+                              delegate: SliverChildListDelegate([
                             for (final transaction in data)
                               Padding(
                                   padding: EdgeInsets.symmetric(vertical: 5),
