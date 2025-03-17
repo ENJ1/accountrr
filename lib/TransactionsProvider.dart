@@ -108,19 +108,41 @@ class Transactions extends _$Transactions {
     ref.invalidateSelf();
   }
 
-  void filterTransactions(String query, String category) {
+  void filterTransactions(
+      String query, String category, dynamic date_after, dynamic date_before) {
     state = AsyncValue.loading();
-    state = AsyncValue.data(state.value!
-        .where((transaction) =>
-            (transaction.title.toLowerCase().contains(query.toLowerCase()) ||
-                transaction.category == category ||
-                transaction.description
-                    .toLowerCase()
-                    .contains(query.toLowerCase())))
-        .toList());
 
-    //void clearTransactions() async {
-    //  return ref.watch(databaseProvider).when(data: (data) {});
-    //}
+    List<Transaction> transactions = state.value!;
+
+    if (!query.isEmpty) {
+      transactions = transactions
+          .where((transaction) =>
+              transaction.title.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    } else if (!query.isEmpty) {
+      transactions = transactions
+          .where((transaction) => transaction.description
+              .toLowerCase()
+              .contains(query.toLowerCase()))
+          .toList();
+    } else if (!category.isEmpty) {
+      transactions = transactions
+          .where((transaction) => transaction.category == category)
+          .toList();
+    } else if (!(date_after == null)) {
+      transactions = transactions
+          .where((transaction) =>
+              transaction.date.millisecondsSinceEpoch >
+              date_after.millisecondsSinceEpoch)
+          .toList();
+    } else if (!(date_before == null)) {
+      transactions = transactions
+          .where((transaction) =>
+              transaction.date.millisecondsSinceEpoch <
+              date_before.millisecondsSinceEpoch)
+          .toList();
+    }
+
+    state = AsyncValue.data(transactions);
   }
 }

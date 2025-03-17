@@ -222,6 +222,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             child: TransactionCard(
                                 onClick: () {},
                                 title: transaction.title,
+                                description: transaction.description,
+                                category: transaction.category,
                                 date: transaction.date,
                                 value: transaction.value.toString()))),
                 ])),

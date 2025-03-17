@@ -68,6 +68,8 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                                                           EdgeInsets.all(5),
                                                       child:
                                                           FormBuilderDropdown(
+                                                              hint: Text(
+                                                                  "Category"),
                                                               initialValue: "",
                                                               name: "category",
                                                               items: [
@@ -90,7 +92,41 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                                                                     "Income"),
                                                                 value:
                                                                     "income"),
-                                                          ]))
+                                                          ])),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 5),
+                                                    child: Row(children: [
+                                                      Expanded(
+                                                        flex: 40,
+                                                        child:
+                                                            FormBuilderDateTimePicker(
+                                                          fieldHintText:
+                                                              "After",
+                                                          inputType:
+                                                              InputType.date,
+                                                          format:
+                                                              DateFormat.yMEd(),
+                                                          name: "date_after",
+                                                        ),
+                                                      ),
+                                                      Spacer(flex: 10),
+                                                      Expanded(
+                                                        flex: 40,
+                                                        child:
+                                                            FormBuilderDateTimePicker(
+                                                          fieldHintText:
+                                                              "Before",
+                                                          inputType:
+                                                              InputType.date,
+                                                          format:
+                                                              DateFormat.yMEd(),
+                                                          name: "date_before",
+                                                        ),
+                                                      )
+                                                    ]),
+                                                  ),
                                                 ],
                                               )),
                                           Row(
@@ -118,7 +154,13 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                                                                 "search"],
                                                             _formKey.currentState
                                                                     ?.value[
-                                                                "category"]);
+                                                                "category"],
+                                                            _formKey.currentState
+                                                                    ?.value[
+                                                                "date_after"],
+                                                            _formKey.currentState
+                                                                    ?.value[
+                                                                "date_before"]);
                                                   },
                                                   child: Text("Apply"))
                                             ],
@@ -127,15 +169,11 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                                   });
                             },
                           ),
-                          IconButton(
-                            icon: Icon(Icons.print),
-                            onPressed: () {},
-                          )
                         ])),
                   ),
                   ref.watch(transactionsProvider).when(
                       data: (data) => SliverFixedExtentList(
-                          itemExtent: 100,
+                          itemExtent: 160,
                           delegate: SliverChildListDelegate([
                             for (final transaction in data)
                               Padding(
@@ -158,6 +196,8 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                                                 }).toString());
                                           },
                                           title: transaction.title,
+                                          description: transaction.description,
+                                          category: transaction.category,
                                           date: transaction.date,
                                           value: transaction.value.toString())))
                           ])),
