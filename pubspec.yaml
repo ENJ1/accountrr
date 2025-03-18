@@ -53,6 +53,7 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.31
   pdf: ^3.11.3
 
+  collection: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

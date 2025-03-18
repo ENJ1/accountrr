@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'DBProvider.dart';
 part 'TransactionsProvider.g.dart';
@@ -40,7 +37,7 @@ class Transactions extends _$Transactions {
     final List<Map<String, Object?>> transactionMaps =
         await ref.watch(dbProvider).value!.query(
               'TRANSACTIONS',
-            );
+            ); // Retrieve all transactions recorded in database
 
     List<Transaction> transactions = [
       for (final transaction in transactionMaps)
@@ -51,19 +48,19 @@ class Transactions extends _$Transactions {
             description: transaction['description'] as String,
             category: transaction['category'] as String,
             value: transaction['value'] as double),
-    ];
+    ]; // Iterate throughout all retrieved transactions and map to a "Transaction" object
 
     transactions.sort(
       (a, b) => b.date.millisecondsSinceEpoch
           .compareTo(a.date.millisecondsSinceEpoch),
-    );
+    ); // Sort List<Transaction> by chronological order (earliest to latest)
 
-    return transactions;
+    return transactions; // Return sorted transactions
   }
 
   Future<Transaction> getTransaction(int id) async {
     final List<Map<String, Object?>> transactionMaps =
-        await ref.watch(dbProvider).value!.query(
+        await ref.read(dbProvider).value!.query(
       'TRANSACTIONS',
       where: 'id = ?',
       whereArgs: [id],
@@ -82,30 +79,29 @@ class Transactions extends _$Transactions {
   }
 
   void addTransaction(Transaction transaction) {
-    ref.watch(dbProvider).when(
+    ref.read(dbProvider).when(
+        // Retrieve a handle to the databaseProvider
         data: (data) {
-          data.insert("TRANSACTIONS", transaction.toMap());
+          data.insert(
+              "TRANSACTIONS",
+              transaction
+                  .toMap()); // Insert a row into the database, mapping each element of the "Transaction" class to a column
         },
         loading: () {},
         error: (object, stack) {});
 
-    ref.invalidateSelf();
+    ref.invalidateSelf(); // Force the TransactionProvider to reload its state and update the UI
   }
 
   void editTransaction(Transaction transaction) {
-    ref.watch(dbProvider).when(
-        data: (data) {
-          data.update("TRANSACTIONS", transaction.toMap(),
-              where: 'id = ?', whereArgs: [transaction.id]);
-        },
-        loading: () {},
-        error: (object, stack) {});
+    deleteTransaction(transaction.id);
+    addTransaction(transaction);
 
     ref.invalidateSelf();
   }
 
   void deleteTransaction(int id) {
-    ref.watch(dbProvider).when(
+    ref.read(dbProvider).when(
         data: (data) {
           data.delete("TRANSACTIONS", where: 'id = ?', whereArgs: [id]);
         },
@@ -116,37 +112,37 @@ class Transactions extends _$Transactions {
   }
 
   void filterTransactions(
-      String query, String category, dynamic date_after, dynamic date_before) {
-    state = AsyncValue.loading();
+      String query, String category, dynamic dateAfter, dynamic dateBefore) {
+    state = const AsyncValue.loading();
 
     List<Transaction> transactions = state.value!;
 
-    if (!query.isEmpty) {
+    if (query.isNotEmpty) {
       transactions = transactions
           .where((transaction) =>
               transaction.title.toLowerCase().contains(query.toLowerCase()))
           .toList();
-    } else if (!query.isEmpty) {
+    } else if (query.isNotEmpty) {
       transactions = transactions
           .where((transaction) => transaction.description
               .toLowerCase()
               .contains(query.toLowerCase()))
           .toList();
-    } else if (!category.isEmpty) {
+    } else if (category.isNotEmpty) {
       transactions = transactions
           .where((transaction) => transaction.category == category)
           .toList();
-    } else if (!(date_after == null)) {
+    } else if (!(dateAfter == null)) {
       transactions = transactions
           .where((transaction) =>
               transaction.date.millisecondsSinceEpoch >
-              date_after.millisecondsSinceEpoch)
+              dateAfter.millisecondsSinceEpoch)
           .toList();
-    } else if (!(date_before == null)) {
+    } else if (!(dateBefore == null)) {
       transactions = transactions
           .where((transaction) =>
               transaction.date.millisecondsSinceEpoch <
-              date_before.millisecondsSinceEpoch)
+              dateBefore.millisecondsSinceEpoch)
           .toList();
     }
 

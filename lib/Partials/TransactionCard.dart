@@ -32,24 +32,24 @@ class TransactionCard extends StatelessWidget {
     return ExpansionTile(
       title: Text(title),
       subtitle: Text(
-        DateFormat("MM-dd-yyyy").format(date).toString() + " • " + category,
-        style: TextStyle(fontSize: 10.0),
+        "${DateFormat("MM-dd-yyyy").format(date)} • $category",
+        style: const TextStyle(fontSize: 10.0),
       ),
       trailing: Padding(
-          padding: EdgeInsets.all(5),
+          padding: const EdgeInsets.all(5),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  "\$" + value,
-                  style: TextStyle(fontSize: 25.0),
+                  "\$$value",
+                  style: const TextStyle(fontSize: 25.0),
                 ),
               ])),
       children: [
         ListTile(
           title: Text(description),
-          trailing: TextButton(onPressed: onClick, child: Text("Edit")),
+          trailing: TextButton(onPressed: onClick, child: const Text("Edit")),
         ),
       ],
     );

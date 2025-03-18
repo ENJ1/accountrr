@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'TransactionCard.dart';
-import 'TransactionsProvider.dart';
-import 'package:riverpod/riverpod.dart';
+import '../Partials/TransactionCard.dart';
+import '../Providers/TransactionsProvider.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 
 class TransactionScreen extends ConsumerStatefulWidget {
   const TransactionScreen({
@@ -26,77 +21,80 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
     return SafeArea(
         child: Center(
             child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: CustomScrollView(slivers: <Widget>[
                   SliverToBoxAdapter(
                     child: SizedBox(
                         height: 65,
                         child: Row(children: [
-                          Expanded(
+                          const Expanded(
                               child: Text(
                             "Your Transactions",
                             style: TextStyle(fontSize: 25),
                           )),
                           IconButton(
-                            icon: Icon(Icons.filter_list),
+                            icon: const Icon(Icons.filter_list),
                             onPressed: () {
-                              final _formKey = GlobalKey<FormBuilderState>();
+                              final formKey = GlobalKey<FormBuilderState>();
 
                               showDialog(
                                   context: context,
                                   builder: (context) {
                                     return SimpleDialog(
-                                        title: Text("Filter Transactions"),
+                                        title:
+                                            const Text("Filter Transactions"),
                                         children: [
                                           FormBuilder(
-                                              key: _formKey,
+                                              key: formKey,
                                               child: Column(
                                                 children: [
                                                   Padding(
-                                                    padding: EdgeInsets.all(5),
+                                                    padding:
+                                                        const EdgeInsets.all(5),
                                                     child: FormBuilderTextField(
                                                       initialValue: "",
-                                                      decoration: InputDecoration(
-                                                          labelText: "Search",
-                                                          border:
-                                                              OutlineInputBorder()),
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              labelText:
+                                                                  "Search",
+                                                              border:
+                                                                  OutlineInputBorder()),
                                                       name: "search",
                                                     ),
                                                   ),
                                                   Padding(
                                                       padding:
-                                                          EdgeInsets.all(5),
+                                                          const EdgeInsets.all(
+                                                              5),
                                                       child:
                                                           FormBuilderDropdown(
-                                                              hint: Text(
+                                                              hint: const Text(
                                                                   "Category"),
                                                               initialValue: "",
                                                               name: "category",
-                                                              items: [
+                                                              items: const [
                                                             DropdownMenuItem(
-                                                                child: Text(
-                                                                    "Groceries"),
                                                                 value:
-                                                                    "groceries"),
-                                                            DropdownMenuItem(
+                                                                    "groceries",
                                                                 child: Text(
-                                                                    "Food"),
-                                                                value: "food"),
+                                                                    "Groceries")),
                                                             DropdownMenuItem(
+                                                                value: "food",
                                                                 child: Text(
-                                                                    "Online Shopping"),
+                                                                    "Food")),
+                                                            DropdownMenuItem(
                                                                 value:
-                                                                    "online_shopping"),
-                                                            DropdownMenuItem(
+                                                                    "online_shopping",
                                                                 child: Text(
-                                                                    "Income"),
-                                                                value:
-                                                                    "income"),
+                                                                    "Online Shopping")),
+                                                            DropdownMenuItem(
+                                                                value: "income",
+                                                                child: Text(
+                                                                    "Income")),
                                                           ])),
                                                   Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            vertical: 5),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(vertical: 5),
                                                     child: Row(children: [
                                                       Expanded(
                                                         flex: 40,
@@ -111,7 +109,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                                                           name: "date_after",
                                                         ),
                                                       ),
-                                                      Spacer(flex: 10),
+                                                      const Spacer(flex: 10),
                                                       Expanded(
                                                         flex: 40,
                                                         child:
@@ -138,10 +136,10 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                                                     ref.invalidate(
                                                         transactionsProvider);
                                                   },
-                                                  child: Text("Reset")),
+                                                  child: const Text("Reset")),
                                               TextButton(
                                                   onPressed: () {
-                                                    _formKey.currentState
+                                                    formKey.currentState
                                                         ?.saveAndValidate();
 
                                                     ref
@@ -149,20 +147,20 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                                                             transactionsProvider
                                                                 .notifier)
                                                         .filterTransactions(
-                                                            _formKey.currentState
+                                                            formKey.currentState
                                                                     ?.value[
                                                                 "search"],
-                                                            _formKey.currentState
+                                                            formKey.currentState
                                                                     ?.value[
                                                                 "category"],
-                                                            _formKey.currentState
+                                                            formKey.currentState
                                                                     ?.value[
                                                                 "date_after"],
-                                                            _formKey.currentState
+                                                            formKey.currentState
                                                                     ?.value[
                                                                 "date_before"]);
                                                   },
-                                                  child: Text("Apply"))
+                                                  child: const Text("Apply"))
                                             ],
                                           )
                                         ]);
@@ -176,7 +174,8 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                               delegate: SliverChildListDelegate([
                             for (final transaction in data)
                               Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 5),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 5),
                                   child: Dismissible(
                                       onDismissed: (DismissDirection) {
                                         ref
@@ -202,7 +201,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                           ])),
                       error: (object, stack) => SliverToBoxAdapter(
                           child: Text(object.toString() + stack.toString())),
-                      loading: () => SliverToBoxAdapter(
+                      loading: () => const SliverToBoxAdapter(
                           child: CircularProgressIndicator()))
                 ]))));
   }

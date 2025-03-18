@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'HomeScreen.dart';
-import "TransactionScreen.dart";
+import 'Views/HomeScreen.dart';
+import "Views/TransactionScreen.dart";
 import 'package:flutter/services.dart';
-import 'EditTransactionScreen.dart';
-import 'HelpScreen.dart';
+import 'Views/EditTransactionScreen.dart';
+import 'Views/HelpScreen.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'dart:io';
 
@@ -20,7 +20,7 @@ void main() async {
   // this step, it will use the sqlite version available on the system.
   databaseFactory = databaseFactoryFfi;
 
-  runApp(ProviderScope(child: const MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 /// The route configuration.
@@ -66,14 +66,14 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
             onPressed: () {
               context.push("/add_transaction");
             },
-            label: Text("Add Transaction"),
+            label: const Text("Add Transaction"),
             icon: const Icon(Icons.add),
           ),
           FloatingActionButton(
               onPressed: () {
                 context.push("/help");
               },
-              child: Icon(Icons.help))
+              child: const Icon(Icons.help))
         ],
       ),
     );
@@ -104,7 +104,7 @@ final _routerConfig = GoRouter(
               pageBuilder: (context, state) => const NoTransitionPage(
                 child: HomeScreen(),
               ),
-              routes: [],
+              routes: const [],
             ),
           ],
         ),
@@ -118,7 +118,7 @@ final _routerConfig = GoRouter(
               pageBuilder: (context, state) => const NoTransitionPage(
                 child: TransactionScreen(),
               ),
-              routes: [],
+              routes: const [],
             ),
           ],
         ),
@@ -130,7 +130,7 @@ final _routerConfig = GoRouter(
               pageBuilder: (context, state) => const NoTransitionPage(
                 child: TransactionScreen(),
               ),
-              routes: [],
+              routes: const [],
             ),
           ],
         ),
@@ -147,7 +147,7 @@ final _routerConfig = GoRouter(
     ),
     GoRoute(
       path: '/help',
-      builder: (context, state) => HelpScreen(),
+      builder: (context, state) => const HelpScreen(),
     ),
   ],
 );
@@ -168,7 +168,7 @@ class MyApp extends StatelessWidget {
         builder: (context, ref, child) => MaterialApp.router(
             theme: ThemeData(
                 colorScheme: ColorScheme.fromSeed(
-                    seedColor: Colors.red, brightness: Brightness.dark)),
+                    seedColor: Colors.pink, brightness: Brightness.light)),
             routerConfig: _routerConfig));
   }
 }

@@ -1,34 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'TransactionsProvider.dart';
+import '../Providers/TransactionsProvider.dart';
 import 'dart:core';
 
 class EditTransactionScreen extends ConsumerStatefulWidget {
   EditTransactionScreen({super.key, this.id = 0});
 
-  int id;
+  int id; // Provided transaction ID (if editing transaction)
 
   @override
   ConsumerState<EditTransactionScreen> createState() =>
       _EditTransactionScreenState();
 }
 
-enum transactionStatus { MoneyIn, MoneyOut }
+enum transactionStatus { MoneyIn, MoneyOut } // SelectionButton options
 
 class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
-  final _formKey = GlobalKey<FormBuilderState>();
-  var selection = transactionStatus.MoneyIn;
+  final _formKey = GlobalKey<
+      FormBuilderState>(); // Global reference to form for later access
+  var selection = transactionStatus.MoneyIn; // Default SelectionButton status
 
   @override
   Widget build(BuildContext context) {
     if (widget.id != 0) {
+      // If a widget ID is provided, signifying an edit operation
       return FutureBuilder(
           future:
               ref.read(transactionsProvider.notifier).getTransaction(widget.id),
@@ -40,8 +39,8 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                         onPressed: () {
                           context.pop();
                         },
-                        icon: Icon(Icons.close)),
-                    title: Text("Edit Transaction"),
+                        icon: const Icon(Icons.close)),
+                    title: const Text("Edit Transaction"),
                     actions: [
                       IconButton(
                           onPressed: () {
@@ -50,7 +49,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                                 .read(transactionsProvider.notifier)
                                 .editTransaction(Transaction(
                                     id: snapshot
-                                        .data!.date.microsecondsSinceEpoch,
+                                        .data!.date.millisecondsSinceEpoch,
                                     date: _formKey.currentState?.value["date"],
                                     title:
                                         _formKey.currentState?.value["title"],
@@ -68,13 +67,13 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
 
                             context.pop();
                           },
-                          icon: Icon(Icons.check)),
+                          icon: const Icon(Icons.check)),
                     ],
                   ),
                   body: SafeArea(
                       child: Center(
                           child: Padding(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 40),
                               child: FormBuilder(
                                 key: _formKey,
@@ -112,40 +111,50 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                                       showCursor: false,
                                       keyboardType: TextInputType.number,
                                       name: "value",
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                           hintText: "100",
                                           border: InputBorder.none,
                                           prefixIcon: Icon(Icons.attach_money)),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 125,
                                       ),
+                                      validator: FormBuilderValidators.compose([
+                                        FormBuilderValidators.required(),
+                                        FormBuilderValidators.numeric()
+                                      ]),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    child: FormBuilderTextField(
+                                      initialValue: snapshot.data!.title,
+                                      decoration: const InputDecoration(
+                                          labelText: "Title",
+                                          border: OutlineInputBorder()),
+                                      name: "title",
                                       validator: FormBuilderValidators.compose([
                                         FormBuilderValidators.required(),
                                       ]),
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 5),
-                                    child: FormBuilderTextField(
-                                      initialValue: snapshot.data!.title,
-                                      decoration: InputDecoration(
-                                          labelText: "Title",
-                                          border: OutlineInputBorder()),
-                                      name: "title",
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 5),
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 5),
                                     child: FormBuilderTextField(
                                       initialValue: snapshot.data!.description,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                           labelText: "Description",
                                           border: OutlineInputBorder()),
                                       name: "description",
+                                      validator: FormBuilderValidators.compose([
+                                        FormBuilderValidators.required(),
+                                      ]),
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 5),
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 5),
                                     child: Row(children: [
                                       Expanded(
                                         flex: 40,
@@ -155,39 +164,49 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                                           inputType: InputType.date,
                                           format: DateFormat.yMEd(),
                                           name: "date",
+                                          validator:
+                                              FormBuilderValidators.compose([
+                                            FormBuilderValidators.required(),
+                                            FormBuilderValidators.dateTime()
+                                          ]),
                                         ),
                                       ),
-                                      Spacer(flex: 10),
+                                      const Spacer(flex: 10),
                                       Expanded(
                                           flex: 40,
                                           child: FormBuilderDropdown(
-                                              hint: Text("Category"),
-                                              initialValue:
-                                                  snapshot.data!.category,
-                                              name: "category",
-                                              items: [
-                                                DropdownMenuItem(
-                                                    child: Text("Groceries"),
-                                                    value: "groceries"),
-                                                DropdownMenuItem(
-                                                    child: Text("Food"),
-                                                    value: "food"),
-                                                DropdownMenuItem(
-                                                    child:
-                                                        Text("Online Shopping"),
-                                                    value: "online_shopping"),
-                                                DropdownMenuItem(
-                                                    child: Text("Income"),
-                                                    value: "income"),
-                                              ]))
+                                            hint: const Text("Category"),
+                                            initialValue:
+                                                snapshot.data!.category,
+                                            name: "category",
+                                            items: const [
+                                              DropdownMenuItem(
+                                                  value: "groceries",
+                                                  child: Text("Groceries")),
+                                              DropdownMenuItem(
+                                                  value: "food",
+                                                  child: Text("Food")),
+                                              DropdownMenuItem(
+                                                  value: "online_shopping",
+                                                  child:
+                                                      Text("Online Shopping")),
+                                              DropdownMenuItem(
+                                                  value: "income",
+                                                  child: Text("Income")),
+                                            ],
+                                            validator:
+                                                FormBuilderValidators.compose([
+                                              FormBuilderValidators.required(),
+                                            ]),
+                                          ))
                                     ]),
                                   )
                                 ]),
                               )))));
             } else if (snapshot.hasError) {
-              return Icon(Icons.error);
+              return const Icon(Icons.error);
             } else {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
           });
     } else {
@@ -197,15 +216,15 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                 onPressed: () {
                   context.pop();
                 },
-                icon: Icon(Icons.close)),
-            title: Text("Edit Transaction"),
+                icon: const Icon(Icons.close)),
+            title: const Text("Edit Transaction"),
             actions: [
               IconButton(
                   onPressed: () {
                     _formKey.currentState?.saveAndValidate();
                     ref.read(transactionsProvider.notifier).addTransaction(
                         Transaction(
-                            id: DateTime.now().microsecondsSinceEpoch,
+                            id: DateTime.now().millisecondsSinceEpoch,
                             date: _formKey.currentState?.value["date"],
                             title: _formKey.currentState?.value["title"],
                             description:
@@ -220,14 +239,14 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
 
                     context.pop();
                   },
-                  icon: Icon(Icons.check)),
+                  icon: const Icon(Icons.check)),
             ],
           ),
           body: SafeArea(
               child: Center(
                   child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 40),
                       child: FormBuilder(
                         key: _formKey,
                         child: Column(children: [
@@ -260,38 +279,45 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                               showCursor: false,
                               keyboardType: TextInputType.number,
                               name: "value",
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                   hintText: "100",
                                   border: InputBorder.none,
                                   prefixIcon: Icon(Icons.attach_money)),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 125,
                               ),
+                              validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.required(),
+                                FormBuilderValidators.numeric()
+                              ]),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: FormBuilderTextField(
+                              decoration: const InputDecoration(
+                                  labelText: "Title",
+                                  border: OutlineInputBorder()),
+                              name: "title",
                               validator: FormBuilderValidators.compose([
                                 FormBuilderValidators.required(),
                               ]),
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(vertical: 5),
+                            padding: const EdgeInsets.symmetric(vertical: 5),
                             child: FormBuilderTextField(
-                              decoration: InputDecoration(
-                                  labelText: "Title",
-                                  border: OutlineInputBorder()),
-                              name: "title",
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 5),
-                            child: FormBuilderTextField(
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                   labelText: "Description",
                                   border: OutlineInputBorder()),
                               name: "description",
+                              validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.required(),
+                              ]),
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(vertical: 5),
+                            padding: const EdgeInsets.symmetric(vertical: 5),
                             child: Row(children: [
                               Expanded(
                                 flex: 40,
@@ -300,27 +326,35 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                                   inputType: InputType.date,
                                   format: DateFormat.yMEd(),
                                   name: "date",
+                                  validator: FormBuilderValidators.compose([
+                                    FormBuilderValidators.required(),
+                                    FormBuilderValidators.dateTime()
+                                  ]),
                                 ),
                               ),
-                              Spacer(flex: 10),
+                              const Spacer(flex: 10),
                               Expanded(
                                   flex: 40,
                                   child: FormBuilderDropdown(
-                                      hint: Text("Category"),
-                                      name: "category",
-                                      items: [
-                                        DropdownMenuItem(
-                                            child: Text("Groceries"),
-                                            value: "groceries"),
-                                        DropdownMenuItem(
-                                            child: Text("Food"), value: "food"),
-                                        DropdownMenuItem(
-                                            child: Text("Online Shopping"),
-                                            value: "online_shopping"),
-                                        DropdownMenuItem(
-                                            child: Text("Income"),
-                                            value: "income"),
-                                      ]))
+                                    hint: const Text("Category"),
+                                    name: "category",
+                                    items: const [
+                                      DropdownMenuItem(
+                                          value: "groceries",
+                                          child: Text("Groceries")),
+                                      DropdownMenuItem(
+                                          value: "food", child: Text("Food")),
+                                      DropdownMenuItem(
+                                          value: "online_shopping",
+                                          child: Text("Online Shopping")),
+                                      DropdownMenuItem(
+                                          value: "income",
+                                          child: Text("Income")),
+                                    ],
+                                    validator: FormBuilderValidators.compose([
+                                      FormBuilderValidators.required(),
+                                    ]),
+                                  ))
                             ]),
                           )
                         ]),

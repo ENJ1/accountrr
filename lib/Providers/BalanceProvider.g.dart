@@ -21,7 +21,7 @@ final balanceProvider =
 );
 
 typedef _$Balance = AutoDisposeAsyncNotifier<double>;
-String _$balanceHistoryHash() => r'17e7a50b9bc9ae085feb4dbeb75f5839006fc64d';
+String _$balanceHistoryHash() => r'ad53c70faadd3193854f700195bd6b156a69596d';
 
 /// See also [BalanceHistory].
 @ProviderFor(BalanceHistory)

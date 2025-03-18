@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'TransactionCard.dart';
-import 'package:riverpod/riverpod.dart';
-import 'TransactionsProvider.dart';
+import '../Partials/TransactionCard.dart';
+import '../Providers/TransactionsProvider.dart';
 import 'package:collection/collection.dart';
-import 'BalanceProvider.dart';
+import '../Providers/BalanceProvider.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({
@@ -26,7 +22,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return SafeArea(
         child: Center(
             child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: CustomScrollView(slivers: <Widget>[
         SliverToBoxAdapter(
           child: SizedBox(
@@ -37,9 +33,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 DateFormat.MMMMEEEEd().format(DateTime.now()),
               ),
               Text(
-                (DateTime.now().hour < 12 ? "Good Morning" : "Good Afternoon") +
-                    ", Ethan",
-                style: TextStyle(fontSize: 25),
+                "${DateTime.now().hour < 12 ? "Good Morning" : "Good Afternoon"}, Ethan",
+                style: const TextStyle(fontSize: 25),
               ),
             ]),
           ),
@@ -49,32 +44,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               height: 150,
               child: Card.outlined(
                   child: Padding(
-                      padding: EdgeInsets.all(15),
+                      padding: const EdgeInsets.all(15),
                       child: Row(children: [
                         Expanded(
                           flex: 40,
                           child: Column(children: [
-                            Expanded(
+                            const Expanded(
                               flex: 15,
                               child: Text(
                                 "Account Balance",
                               ),
                             ),
-                            Spacer(flex: 15),
+                            const Spacer(flex: 15),
                             Expanded(
                               flex: 70,
                               child: ref.watch(balanceProvider).when(
                                   data: (data) => Text(
-                                        "\$" + data.toString(),
-                                        style: TextStyle(fontSize: 25),
+                                        "\$$data",
+                                        style: const TextStyle(fontSize: 25),
                                       ),
                                   error: (object, stack) => Text(
                                       object.toString() + stack.toString()),
-                                  loading: () => CircularProgressIndicator()),
+                                  loading: () =>
+                                      const CircularProgressIndicator()),
                             ),
                           ]),
                         ),
-                        Spacer(flex: 10),
+                        const Spacer(flex: 10),
                         Expanded(
                             flex: 50,
                             child: ref.watch(balanceHistoryProvider).when(
@@ -82,7 +78,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         borderData: FlBorderData(
                                           border: const Border(),
                                         ),
-                                        titlesData: FlTitlesData(
+                                        titlesData: const FlTitlesData(
                                           bottomTitles: AxisTitles(
                                               sideTitles: SideTitles(
                                                   showTitles: false)),
@@ -96,10 +92,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                               sideTitles: SideTitles(
                                                   showTitles: false)),
                                         ),
-                                        gridData: FlGridData(show: false),
+                                        gridData: const FlGridData(show: false),
                                         lineBarsData: [
                                           LineChartBarData(
-                                              dotData: FlDotData(
+                                              dotData: const FlDotData(
                                                 show: false,
                                               ),
                                               spots: [
@@ -113,7 +109,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         ])),
                                 error: (object, stack) =>
                                     Text(object.toString() + stack.toString()),
-                                loading: () => CircularProgressIndicator())),
+                                loading: () =>
+                                    const CircularProgressIndicator())),
                       ])))),
         ),
         SliverToBoxAdapter(
@@ -123,69 +120,69 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Expanded(
                 child: Card.outlined(
                     child: Padding(
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         child: Column(children: [
-                          Expanded(
+                          const Expanded(
                             flex: 20,
                             child: Text("Money In"),
                           ),
-                          Spacer(flex: 20),
+                          const Spacer(flex: 20),
                           Expanded(
                               flex: 60,
                               child: ref.watch(transactionsProvider).when(
                                   data: (data) => Text(
-                                        "\$" +
-                                            [
-                                              for (final transaction in data)
-                                                (transaction.value > 0)
-                                                    ? transaction.value
-                                                    : 0
-                                            ].sum.toString(),
-                                        style: TextStyle(fontSize: 25),
+                                        "\$${[
+                                          for (final transaction in data)
+                                            (transaction.value > 0)
+                                                ? transaction.value
+                                                : 0
+                                        ].sum}",
+                                        style: const TextStyle(fontSize: 25),
                                       ),
                                   error: (object, stack) => Text(
                                       object.toString() + stack.toString()),
-                                  loading: () => CircularProgressIndicator())),
+                                  loading: () =>
+                                      const CircularProgressIndicator())),
                         ])))),
             Expanded(
                 child: Expanded(
                     child: Card.outlined(
                         child: Padding(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             child: Column(children: [
-                              Expanded(
+                              const Expanded(
                                 flex: 20,
                                 child: Text("Money Out"),
                               ),
-                              Spacer(flex: 20),
+                              const Spacer(flex: 20),
                               Expanded(
                                 flex: 60,
                                 child: ref.watch(transactionsProvider).when(
                                     data: (data) => Text(
-                                          "\$" +
-                                              [
-                                                for (final transaction in data)
-                                                  (transaction.value < 0)
-                                                      ? transaction.value
-                                                      : 0
-                                              ].sum.toString(),
-                                          style: TextStyle(fontSize: 25),
+                                          "\$${[
+                                            for (final transaction in data)
+                                              (transaction.value < 0)
+                                                  ? transaction.value
+                                                  : 0
+                                          ].sum}",
+                                          style: const TextStyle(fontSize: 25),
                                         ),
                                     error: (object, stack) => Text(
                                         object.toString() + stack.toString()),
-                                    loading: () => CircularProgressIndicator()),
+                                    loading: () =>
+                                        const CircularProgressIndicator()),
                               ),
                             ])))))
           ]),
         )),
         SliverPadding(
-          padding: EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.only(top: 8),
           sliver: SliverToBoxAdapter(
             child: SizedBox(
                 height: 50,
                 child: Row(
                   children: [
-                    Expanded(
+                    const Expanded(
                       flex: 2,
                       child: Text(
                         "Recent Transactions",
@@ -194,13 +191,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                     Expanded(
                         child: TextButton(
-                            child: Text(
+                            onPressed: () {},
+                            style: const ButtonStyle(
+                                splashFactory: NoSplash.splashFactory),
+                            child: const Text(
                               "SHOW ALL",
                               style: TextStyle(fontSize: 10),
-                            ),
-                            onPressed: () {},
-                            style: ButtonStyle(
-                                splashFactory: NoSplash.splashFactory))),
+                            ))),
                   ],
                 )),
           ),
@@ -210,14 +207,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     delegate: SliverChildListDelegate([
                   for (final transaction in data.take(3))
                     Padding(
-                        padding: EdgeInsets.symmetric(vertical: 5),
+                        padding: const EdgeInsets.symmetric(vertical: 5),
                         child: Dismissible(
                             onDismissed: (DismissDirection) {
                               ref
                                   .watch(transactionsProvider.notifier)
                                   .deleteTransaction(transaction.id);
 
-                              this.dispose();
+                              dispose();
                             },
                             key: Key(transaction.id.toString()),
                             child: TransactionCard(
@@ -231,7 +228,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             error: (object, stack) => SliverToBoxAdapter(
                 child: Text(object.toString() + stack.toString())),
             loading: () =>
-                SliverToBoxAdapter(child: CircularProgressIndicator()))
+                const SliverToBoxAdapter(child: CircularProgressIndicator()))
       ]),
     )));
   }

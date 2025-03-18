@@ -1,16 +1,21 @@
 # accountrr
 
-A new Flutter project.
+An easy way to manage your finances!
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Navigation
 
-A few resources to get you started if this is your first Flutter project:
+accountrr incorporates an intuitive, easy-to-use navigation interface. Two main pages are directly navigable via the bottom navigation bar: the homescreen and transaction viewing screen. Pressing the "Add Transaction" action button opens the transaction editing page. Pressing the "?" action button opens the help/instructions page.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Adding Transactions
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Press the "Add Transaction" button. The transaction editing screen will be displayed. Enter the transaction value, title, description, date, and category. Press the upper right "checkmark" button to submit.
+
+### Editing Transactions
+
+Navigate to the "Transactions" screen. Locate the transaction card to be edited, and tap it. The card will expand, presenting an "Edit" button. Upon pressing the edit button, the transaction editing screen will be displayed and populated. Make necessary changes and press the "checkmark" button.
+
+### Deleting Transactions
+
+Navigate to the "Transactions" screen. Locate the transaction to be deleted, and swipe it to the side. The transaction will be deleted from the database.

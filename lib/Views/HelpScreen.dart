@@ -1,16 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:path/path.dart';
-import 'TransactionCard.dart';
-import 'TransactionsProvider.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 
 class HelpScreen extends ConsumerStatefulWidget {
   const HelpScreen({
@@ -26,13 +15,13 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Help"),
+          title: const Text("Help"),
         ),
         body: SafeArea(
             child: Center(
                 child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: ListView(children: [
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: ListView(children: const [
             Text(
               "Managing your Transactions",
               style: TextStyle(fontSize: 35),

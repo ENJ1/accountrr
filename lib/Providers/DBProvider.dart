@@ -6,6 +6,7 @@ part 'DBProvider.g.dart';
 
 @Riverpod()
 class db extends _$db {
+  // Provides access to SQLite database across the application via provider
   @override
   Future<Database> build() async {
     var databasesPath = await getApplicationSupportDirectory();
